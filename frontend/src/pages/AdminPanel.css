@@ -1,0 +1,65 @@
+.admin-container {
+  padding: 40px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.admin-header h2 { font-size: 28px; color: #1e293b; margin: 0; }
+.admin-subtext { color: #64748b; margin-top: 5px; font-size: 14px; }
+
+.status-badge-group { display: flex; gap: 10px; }
+.status-pill { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.status-pill.online { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.status-pill.version { background-color: #e2e8f0; color: #475569; }
+
+.admin-grid-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; }
+
+.admin-card {
+    background: white; padding: 20px; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+    display: flex; align-items: center; gap: 15px;
+}
+
+.card-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.blue-bg { background-color: #eff6ff; } .purple-bg { background-color: #faf5ff; } .orange-bg { background-color: #fff7ed; }
+
+.card-info h4 { margin: 0 0 4px 0; color: #334155; font-size: 15px; }
+.green-text { color: #10b981; font-weight: 600; font-size: 13px; }
+.latency-text { margin-left: auto; font-size: 12px; color: #94a3b8; font-family: monospace; }
+
+.mini-chart { margin-left: auto; display: flex; gap: 3px; align-items: flex-end; height: 24px; }
+.mini-chart .bar { width: 4px; background-color: #cbd5e1; border-radius: 2px; }
+
+.admin-grid-main { display: grid; grid-template-columns: 1.5fr 1fr; gap: 25px; }
+
+.metrics-panel, .tools-panel { background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+.metrics-panel h3, .tools-panel h3 { margin: 0 0 20px 0; color: #1e293b; font-size: 18px; }
+
+.metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.metric-box { background-color: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #f1f5f9; }
+.metric-label { display: block; font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.metric-value { font-size: 24px; font-weight: 700; color: #0f172a; }
+.alert-text { color: #10b981; }
+
+.load-bar-container { height: 8px; background-color: #e2e8f0; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+.load-bar-fill { height: 100%; transition: width 0.5s ease; }
+.metric-sub { display: block; font-size: 12px; color: #94a3b8; margin-top: 5px; text-align: right; }
+
+.tool-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f1f5f9; }
+.tool-row:last-child { border-bottom: none; }
+.tool-info strong { display: block; font-size: 14px; color: #334155; margin-bottom: 3px; }
+.tool-info p { margin: 0; font-size: 12px; color: #94a3b8; }
+
+.admin-btn { padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background-color: #0f172a; color: white; transition: all 0.2s; }
+.admin-btn:hover:not(:disabled) { background-color: #334155; }
+.admin-btn.outline { background-color: transparent; border: 1px solid #cbd5e1; color: #475569; }
+.admin-btn.outline:hover:not(:disabled) { background-color: #f8fafc; border-color: #94a3b8; }
+.admin-btn.loading { opacity: 0.7; cursor: wait; }

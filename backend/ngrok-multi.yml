@@ -1,0 +1,10 @@
+version: "2"
+authtoken: 37MsERBYfcL4Izttbf6xfJUp8i1_3c94PHy4Hddsdhub3i8jW
+tunnels:
+  celestina-backend:
+    proto: http
+    addr: 8000
+    domain: celestina-raffish-nayeli.ngrok-free.dev
+  team-frontend:
+    proto: http
+    addr: 3000

@@ -303,3 +303,69 @@ a {
     padding: 1.25rem;
   }
 }
+
+/* --- DASHBOARD & ALERTS STYLING --- */
+
+/* Split layout for dashboard */
+@media (max-width: 900px) {
+  .dashboard-split {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Alert Items Base Styles */
+.alert-item {
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ccc;
+  background: #f9f9f9;
+  transition: transform 0.2s ease;
+}
+
+.alert-item:hover {
+  transform: translateX(5px);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.alert-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.alert-item p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.alert-item small {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* Priority Colors */
+.alert-item.high-priority {
+  background: #ffebee;
+  border-left-color: #d32f2f;
+}
+.alert-item.high-priority .alert-title { color: #c62828; }
+
+.alert-item.medium-priority {
+  background: #fff8e1;
+  border-left-color: #ffa000;
+}
+.alert-item.medium-priority .alert-title { color: #f57c00; }
+
+.alert-item.low-priority {
+  background: #f1f8e9;
+  border-left-color: #2e7d32;
+}
+.alert-item.low-priority .alert-title { color: #2e7d32; }
+
+/* Table Hover */
+tr:hover {
+  background-color: #f8faff;
+}

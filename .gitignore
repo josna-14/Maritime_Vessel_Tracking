@@ -1,0 +1,14 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+
+# Node
+node_modules/
+
+# Tools
+ngrok.exe
+
+# Secrets
+.env
