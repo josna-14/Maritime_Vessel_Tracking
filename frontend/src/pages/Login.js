@@ -18,23 +18,30 @@ export default function Login() {
     setError("");
 
     try {
-      // 1. Send Credentials to Backend
-      const res = await axios.post("http://127.0.0.1:8000/api/login/", {
-        username: form.username,
-        password: form.password
-      });
+      // ✅ CHANGED: Using your public Ngrok Backend URL
+      // We also added headers to bypass the Ngrok warning page
+      const res = await axios.post(
+        "https://celestina-raffish-nayeli.ngrok-free.dev/api/login/",
+        {
+          username: form.username,
+          password: form.password
+        },
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json"
+          }
+        }
+      );
 
       // ✅ 2. On Success, store Token AND Role
-      // The backend now sends 'role' and 'username' along with tokens
       localStorage.setItem("access_token", res.data.access);
       localStorage.setItem("refresh_token", res.data.refresh);
-      
-      // THIS IS THE NEW PART:
       localStorage.setItem("userRole", res.data.role); 
       localStorage.setItem("username", res.data.username);
 
       // 3. Redirect to Dashboard
-      navigate("/");
+      navigate("/dashboard");
       
     } catch (err) {
       console.error(err);
@@ -54,7 +61,19 @@ export default function Login() {
     <main className="auth">
       <form className="auth__card" onSubmit={handleSubmit}>
         <h1>Login</h1>
-        {error && <p className="auth__message error" style={{background: "#ffebee", color: "#c62828", padding: "10px", borderRadius: "8px"}}>{error}</p>}
+        {error && (
+          <p 
+            className="auth__message error" 
+            style={{
+              background: "#ffebee", 
+              color: "#c62828", 
+              padding: "10px", 
+              borderRadius: "8px"
+            }}
+          >
+            {error}
+          </p>
+        )}
         
         <label>
           Username

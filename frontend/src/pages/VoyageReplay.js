@@ -4,6 +4,15 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./VoyageReplay.css";
 
+// ✅ 1. Define the API Base URL (Same as your other files)
+const API_BASE = "https://celestina-raffish-nayeli.ngrok-free.dev/api";
+
+// ✅ 2. Define Headers to bypass Ngrok warning
+const getHeaders = () => ({
+  "Content-Type": "application/json",
+  "ngrok-skip-browser-warning": "true",
+});
+
 // Helper to center map
 function MapUpdater({ center }) {
   const map = useMap();
@@ -34,7 +43,8 @@ export default function VoyageReplay() {
 
   // 1. Fetch List of Voyages
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/voyages/")
+    // ✅ CHANGED: Use API_BASE and add Headers
+    fetch(`${API_BASE}/voyages/`, { headers: getHeaders() })
       .then(res => res.json())
       .then(data => {
         setVoyages(data);
@@ -52,7 +62,8 @@ export default function VoyageReplay() {
     setLoading(true);
     setError("");
     
-    fetch(`http://127.0.0.1:8000/api/voyage-track/${selectedVoyageId}/`)
+    // ✅ CHANGED: Use API_BASE and add Headers
+    fetch(`${API_BASE}/voyage-track/${selectedVoyageId}/`, { headers: getHeaders() })
       .then(res => {
          if (res.status === 404) throw new Error("No track history found for this voyage.");
          if (!res.ok) throw new Error("Failed to load data.");

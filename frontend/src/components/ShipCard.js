@@ -33,9 +33,8 @@ export default function ShipCard({ vessel }) {
         <span>{vessel.cargo_type || "—"}</span>
       </div>
 
-      <button className="ghost-btn" style={{ width: "100%", textAlign: "center", justifyContent: "center" }}>
-        View details
-      </button>
+      {/* ✅ REMOVED: The "View details" button is gone. 
+          The card will now just end here cleanly. */}
     </div>
   );
 }

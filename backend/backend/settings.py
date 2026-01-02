@@ -6,19 +6,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p6065abpan9kaiy0l6qdna^_!&8@ck3ya13(2&btm+1*c7nsj&'
 DEBUG = True
 
-# ✅ 1. Ngrok Configuration (Based on your screenshot)
+# ✅ 1. Ngrok Configuration 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '.ngrok-free.dev',  # Your screenshot confirms you use .dev
-    '.ngrok-free.app',  # Added just in case it switches
+    '.ngrok-free.dev', 
+    '.ngrok-free.app',  
 ]
 
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
     "https://*.ngrok-free.dev",
-    # ✅ Add your specific FRONTEND Ngrok URL here for safety
     # "https://bbbb-33-44.ngrok-free.app", 
 ]
 
@@ -37,7 +36,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware', <--- REMOVED DUPLICATE
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -98,13 +96,10 @@ REST_FRAMEWORK = {
     ]
 }
 
-# ✅ CORS CONFIGURATION - FINAL FIX
-from corsheaders.defaults import default_headers  # <--- IMPORT THIS!
 
-# 1. Allow everyone (for simplicity during testing)
+from corsheaders.defaults import default_headers  
 CORS_ALLOW_ALL_ORIGINS = True
 
-# 2. Allow specific origins (optional since we set True above, but good to keep)
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -112,7 +107,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://*.ngrok-free.dev",
 ]
 
-# 3. ✅ THIS IS THE MISSING PART THAT FIXES YOUR ERROR
+
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "ngrok-skip-browser-warning",
 ]

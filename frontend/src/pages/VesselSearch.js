@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+// ✅ 1. Remove axios, Import the function from api.js
+import { fetchLiveVessels } from "../api/api"; 
 import ShipCard from "../components/ShipCard";
 import Loader from "../components/Loader";
 
@@ -14,21 +15,25 @@ export default function VesselSearch() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get("http://127.0.0.1:8000/api/vessels/")
-      .then((res) => {
-        if (res.data && res.data.vessels) {
-          setVessels(res.data.vessels);
+    
+    // ✅ 2. Use the centralized API function (Works on Phone & Desktop)
+    fetchLiveVessels()
+      .then((data) => {
+        // Handle if data comes as { vessels: [...] } or just [...]
+        if (data.vessels) {
+          setVessels(data.vessels);
+        } else if (Array.isArray(data)) {
+          setVessels(data);
         }
       })
       .catch(err => console.error("Search fetch error:", err))
       .finally(() => setLoading(false));
   }, []);
 
-  // 1. DYNAMIC FLAG LIST (Existing logic)
+  // 1. DYNAMIC FLAG LIST
   const uniqueFlags = ["All Flags", ...new Set(vessels.map(v => v.flag).filter(Boolean))].sort();
 
-  // 2. DYNAMIC TYPE LIST (New logic: Scans data for available types only)
-  // We filter(Boolean) to remove null/undefined/empty types
+  // 2. DYNAMIC TYPE LIST
   const uniqueTypes = ["All Types", ...new Set(vessels.map(v => v.type).filter(Boolean))].sort();
 
   // 3. Filter Logic
@@ -36,10 +41,7 @@ export default function VesselSearch() {
     const matchesSearch = (ship.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
                            ship.imo_number?.includes(searchTerm));
     
-    // Exact match for type (unless "All Types")
     const matchesType = selectedType === "All Types" || ship.type === selectedType;
-
-    // Exact match for flag (unless "All Flags")
     const matchesFlag = selectedFlag === "All Flags" || ship.flag === selectedFlag;
 
     return matchesSearch && matchesType && matchesFlag;
@@ -62,15 +64,15 @@ export default function VesselSearch() {
           <div style={{ flex: 2, minWidth: "250px" }}>
              <label style={{display:"block", marginBottom:"5px", fontSize:"0.85rem", fontWeight:"600"}}>Search</label>
              <input 
-              type="text" 
-              placeholder="Search by vessel name or IMO..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #ddd" }}
-            />
+               type="text" 
+               placeholder="Search by vessel name or IMO..." 
+               value={searchTerm}
+               onChange={(e) => setSearchTerm(e.target.value)}
+               style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #ddd" }}
+             />
           </div>
 
-          {/* Type Dropdown (Now Dynamic) */}
+          {/* Type Dropdown */}
           <div style={{ flex: 1, minWidth: "150px" }}>
             <label style={{display:"block", marginBottom:"5px", fontSize:"0.85rem", fontWeight:"600"}}>Vessel Type</label>
             <select 
@@ -78,7 +80,6 @@ export default function VesselSearch() {
               onChange={(e) => setSelectedType(e.target.value)}
               style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #ddd", background: "white" }}
             >
-              {/* This map now only shows types that actually exist in your DB */}
               {uniqueTypes.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>

@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import JsonResponse
 
+
 from .models import Vessel, Port, Voyage, Event, VoyageTrack
 from .serializers import (
     RegisterSerializer,

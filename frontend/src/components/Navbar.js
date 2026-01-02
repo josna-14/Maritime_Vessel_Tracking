@@ -1,23 +1,26 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom"; // 1. Import useLocation
 import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation(); // 2. Get current path
   
   // ✅ Get the role
   const rawRole = localStorage.getItem("userRole");
-  // Normalize to lowercase for safer comparison (handles "Admin", "admin", "ADMIN")
   const userRole = rawRole ? rawRole.toLowerCase() : "";
   
   const isLoggedIn = !!localStorage.getItem("access_token");
 
-  // Debugging: Check your console (F12) to see what your role actually is!
-  console.log("Current Logged In Role:", rawRole);
+  // 3. HIDE NAVBAR on Login/Register pages
+  // We don't want to see the menu when we are trying to log in.
+  if (location.pathname === "/" || location.pathname === "/login" || location.pathname === "/register") {
+    return null;
+  }
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/"); // Redirect to Login (which is now "/")
   };
 
   return (
@@ -28,7 +31,9 @@ export default function Navbar() {
       </div>
 
       <div className="navbar__links">
-        <NavLink to="/" end>Dashboard</NavLink>
+        {/* 4. CHANGED: Points to /dashboard now */}
+        <NavLink to="/dashboard">Dashboard</NavLink>
+        
         <NavLink to="/map">Map</NavLink>
         <NavLink to="/search">Vessels</NavLink>
         <NavLink to="/playback">Voyage Replay</NavLink>
@@ -38,7 +43,7 @@ export default function Navbar() {
           <NavLink to="/analyst" className="special-link">Analyst Hub</NavLink>
         )}
 
-        {/* ✅ SHOW FOR ADMINS (Case Insensitive) */}
+        {/* ✅ SHOW FOR ADMINS */}
         {userRole === "admin" && (
            <NavLink to="/admin-panel" className="nav-link-admin">Admin Control</NavLink>
         )}
@@ -47,7 +52,8 @@ export default function Navbar() {
           <button onClick={handleLogout} className="logout-btn">Logout</button>
         ) : (
           <>
-            <NavLink to="/login">Login</NavLink>
+            {/* These links are technically hidden by step 3, but good to keep as backup */}
+            <NavLink to="/">Login</NavLink>
             <NavLink to="/register">Register</NavLink>
           </>
         )}

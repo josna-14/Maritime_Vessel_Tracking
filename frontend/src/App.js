@@ -11,7 +11,7 @@ import VoyageReplay from "./pages/VoyageReplay";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AnalystDashboard from "./pages/AnalystDashboard"; 
-import AdminPanel from "./pages/AdminPanel"; // ✅ You already have this import
+import AdminPanel from "./pages/AdminPanel"; 
 
 export default function App() {
   return (
@@ -19,8 +19,11 @@ export default function App() {
       <Navbar />
       <div className="app-container">
         <Routes>
-          {/* Main Dashboard */}
-          <Route path="/" element={<Dashboard />} />
+          {/* ✅ CHANGE 1: Login is now the default ("/") path */}
+          <Route path="/" element={<Login />} />
+
+          {/* ✅ CHANGE 2: Dashboard is moved to "/dashboard" */}
+          <Route path="/dashboard" element={<Dashboard />} />
           
           {/* Map & Tracking */}
           <Route path="/map" element={<MapView />} />
@@ -29,13 +32,13 @@ export default function App() {
           <Route path="/playback" element={<VoyageReplay />} />
           
           {/* Authentication */}
+          {/* You can keep /login as an alias if you want, or remove it since "/" is now login */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Analyst Hub */}
           <Route path="/analyst" element={<AnalystDashboard />} />
           
-          {/* ✅ ADD THIS MISSING ROUTE */}
           <Route path="/admin-panel" element={<AdminPanel />} />
           
         </Routes>

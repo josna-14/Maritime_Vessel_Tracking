@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
+import { fetchLiveVessels } from "../api/api"; // ✅ Import API Helper
 import "./AnalystDashboard.css";
 
 // Register ChartJS components
@@ -27,21 +28,53 @@ ChartJS.register(
 
 const AnalystDashboard = () => {
   const [downloading, setDownloading] = useState(false);
+  const [vesselStats, setVesselStats] = useState({
+      types: [],
+      counts: []
+  });
 
-  // --- DATA: Traffic Flow Trend (Line Chart) ---
+  // ✅ NEW: Fetch Real Data on Load
+  useEffect(() => {
+    const getData = async () => {
+        try {
+            const data = await fetchLiveVessels();
+            // Handle array vs object response
+            const ships = data.vessels ? data.vessels : (Array.isArray(data) ? data : []);
+
+            // 1. Calculate Fleet Composition (Real Counts)
+            const typeCounts = {};
+            ships.forEach(ship => {
+                const type = ship.type || "Unknown";
+                typeCounts[type] = (typeCounts[type] || 0) + 1;
+            });
+
+            setVesselStats({
+                types: Object.keys(typeCounts),
+                counts: Object.values(typeCounts)
+            });
+
+        } catch (err) {
+            console.error("Failed to load analyst data", err);
+        }
+    };
+    getData();
+  }, []);
+
+
+  // --- DATA: Traffic Flow Trend (Kept Static for now as historical data is complex) ---
   const trafficData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
         label: "Active Vessels",
-        data: [12, 19, 15, 25, 22, 30],
-        borderColor: "#0056b3", // Brighter Marine Blue
+        data: [12, 19, 15, 25, 22, 30], // You can keep this static or create a backend endpoint for history
+        borderColor: "#0056b3", 
         backgroundColor: "rgba(0, 86, 179, 0.1)",
         borderWidth: 3,
         pointBackgroundColor: "#fff",
         pointBorderColor: "#0056b3",
         pointRadius: 5,
-        tension: 0.4, // Smooth curves
+        tension: 0.4, 
         fill: true,
       },
     ],
@@ -72,13 +105,15 @@ const AnalystDashboard = () => {
     },
   };
 
-  // --- DATA: Fleet Composition (Vertical Bar Chart) ---
+  // --- DATA: Fleet Composition (NOW DYNAMIC) ---
   const fleetData = {
-    labels: ["Bulker", "Cargo", "Container", "Passenger", "Tanker", "Tug"],
+    // If no real data yet, fallback to default labels
+    labels: vesselStats.types.length > 0 ? vesselStats.types : ["Bulker", "Cargo", "Container", "Tanker"],
     datasets: [
       {
         label: "Fleet Count",
-        data: [12, 9, 9, 4, 5, 11],
+        // Use real counts
+        data: vesselStats.counts.length > 0 ? vesselStats.counts : [12, 19, 3, 5],
         backgroundColor: [
           "#94a3b8", // Grey
           "#0284c7", // Blue
@@ -86,14 +121,14 @@ const AnalystDashboard = () => {
           "#fbbf24", // Yellow
           "#f87171", // Red
           "#fb923c", // Orange
+          "#4ade80", // Green
         ],
-        borderRadius: 8, // Rounded bars
-        barThickness: 40, // Thicker bars
+        borderRadius: 8, 
+        barThickness: 40, 
       },
     ],
   };
 
-  // ✅ Changed to Vertical Graph
   const fleetOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -113,17 +148,15 @@ const AnalystDashboard = () => {
     },
   };
 
-  // --- 🛠️ WORKING FEATURES: Export Functions ---
+  // --- Export Functions ---
   
   const handleExportCSV = () => {
-    // 1. Create CSV Content
     const headers = "Month,Active Vessels\n";
     const rows = trafficData.labels.map((month, index) => 
       `${month},${trafficData.datasets[0].data[index]}`
     ).join("\n");
     const csvContent = "data:text/csv;charset=utf-8," + headers + rows;
 
-    // 2. Trigger Download
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -135,9 +168,9 @@ const AnalystDashboard = () => {
 
   const handleExportSummary = () => {
     setDownloading(true);
-    // Simulate a "Processing" delay for realism
     setTimeout(() => {
         const headers = "Category,Count\n";
+        // Export the REAL data
         const rows = fleetData.labels.map((label, index) => 
             `${label},${fleetData.datasets[0].data[index]}`
         ).join("\n");
@@ -183,11 +216,11 @@ const AnalystDashboard = () => {
               </div>
             </div>
 
-            {/* Card 2: Fleet Composition (Vertical) */}
+            {/* Card 2: Fleet Composition */}
             <div className="metric-card">
               <div className="card-header">
                 <h3>Fleet Composition</h3>
-                <span className="card-badge">Distribution</span>
+                <span className="card-badge">Real-time Distribution</span>
               </div>
               <p className="subtext">Current fleet breakdown by vessel category.</p>
               <div className="chart-wrapper bar-chart-container">
@@ -211,7 +244,7 @@ const AnalystDashboard = () => {
                   <h4>Historical Traffic Data</h4>
                   <p>CSV export of vessel movement logs.</p>
                   <button className="export-btn primary" onClick={handleExportCSV}>
-                     Download CSV
+                      Download CSV
                   </button>
               </div>
             </div>
@@ -227,7 +260,7 @@ const AnalystDashboard = () => {
                     onClick={handleExportSummary}
                     disabled={downloading}
                   >
-                     {downloading ? "Generating..." : "Download Report"}
+                      {downloading ? "Generating..." : "Download Report"}
                   </button>
               </div>
             </div>

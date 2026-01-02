@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { fetchDashboardStats } from "../api/api"; // ✅ Import the centralized API helper
 import "./AdminPanel.css";
 
 const AdminPanel = () => {
   // Mock System Stats 
-  // Remove the unused "set" functions to fix warnings
   const [serverLoad, setServerLoad] = useState(12);
-  const [dbStatus] = useState("Connected"); // ✅ Fixed
-  const [apiStatus] = useState("Healthy");  // ✅ Fixed
+  const [dbStatus] = useState("Connected");
+  const [apiStatus] = useState("Healthy");
   const [activeUsers, setActiveUsers] = useState(0);
 
   // Maintenance Button States
@@ -14,21 +14,22 @@ const AdminPanel = () => {
   const [rotating, setRotating] = useState(false);
 
   useEffect(() => {
-    // 1. Fetch Real Data (using Dashboard API to get vessel count as a proxy for activity)
-    const fetchStats = async () => {
+    // 1. Fetch Real Data (using centralized API to fix Ngrok/Mobile issues)
+    const getStats = async () => {
       try {
-        const token = localStorage.getItem("access_token");
-        const res = await fetch("http://127.0.0.1:8000/api/dashboard/", {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        setActiveUsers(data.total_vessels || 42); 
+        // ✅ Use the helper function that has the correct Ngrok URL
+        const data = await fetchDashboardStats(); 
+        
+        // If data exists, use total_vessels
+        if (data && data.total_vessels) {
+            setActiveUsers(data.total_vessels);
+        }
       } catch (err) {
-        console.error("Failed to fetch stats", err);
+        console.error("Failed to fetch admin stats", err);
       }
     };
 
-    fetchStats();
+    getStats();
 
     // 2. Simulate "Live" Server Load fluctuating
     const interval = setInterval(() => {
@@ -84,7 +85,6 @@ const AdminPanel = () => {
             <span className="status-text green-text">{apiStatus}</span>
           </div>
           <div className="mini-chart">
-             {/* Decorative bars */}
             <div className="bar" style={{height: '60%'}}></div>
             <div className="bar" style={{height: '80%'}}></div>
             <div className="bar" style={{height: '40%'}}></div>
@@ -107,6 +107,7 @@ const AdminPanel = () => {
           <div className="card-icon orange-bg">🛡️</div>
           <div className="card-info">
             <h4>Tracked Assets</h4>
+            {/* Shows real data from API */}
             <span className="status-text">Active: {activeUsers}</span>
           </div>
         </div>
@@ -123,7 +124,8 @@ const AdminPanel = () => {
             
             <div className="metric-box">
               <span className="metric-label">Nodes Online</span>
-              <span className="metric-value">{activeUsers + 3}</span>
+              {/* Dynamic: updates based on real vessel count */}
+              <span className="metric-value">{activeUsers > 0 ? activeUsers + 3 : 0}</span>
             </div>
 
             <div className="metric-box">

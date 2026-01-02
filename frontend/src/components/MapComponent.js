@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
+// Link is no longer needed since we removed the Details button
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { fetchLiveVessels, fetchRiskZones } from "../api/api";
-import Loader from "./Loader";
+import { fetchLiveVessels, fetchRiskZones } from "../api/api"; 
+import Loader from "./Loader"; 
 
 /* ===================================================
    1. COLOR CODING LOGIC (Ship Categories)
@@ -20,7 +21,7 @@ const getVesselColor = (type) => {
 };
 
 /* ===================================================
-   2. CUSTOM ICON GENERATOR
+   2. CUSTOM ICON GENERATOR (SVG ARROWS)
 =================================================== */
 const createShipIcon = (course = 0, type) => {
   const color = getVesselColor(type);
@@ -91,13 +92,16 @@ export default function MapComponent({ center = [20, 0], zoom = 2 }) {
           fetchLiveVessels(),
           fetchRiskZones()
         ]);
+        
         if (mounted) {
-          if (Array.isArray(vesselsRes?.vessels)) setVessels(vesselsRes.vessels);
+          const vesselList = vesselsRes.vessels ? vesselsRes.vessels : (Array.isArray(vesselsRes) ? vesselsRes : []);
+          setVessels(vesselList);
           if (Array.isArray(risksRes)) setRisks(risksRes);
         }
-      } catch (err) { console.error(err); } 
-      finally { setLoading(false); }
+      } catch (err) { console.error("Map Data Error:", err); } 
+      finally { if(mounted) setLoading(false); }
     };
+
     loadData();
     const interval = setInterval(loadData, 10000); 
     return () => { mounted = false; clearInterval(interval); };
@@ -113,7 +117,7 @@ export default function MapComponent({ center = [20, 0], zoom = 2 }) {
           attribution='&copy; OpenStreetMap'
         />
 
-        {/* --- LAYER 1: RISK OVERLAYS --- */}
+        {/* --- LAYER 1: RISK OVERLAYS (Circles) --- */}
         {risks.map((risk) => (
           <Circle 
             key={risk.id}
@@ -136,7 +140,7 @@ export default function MapComponent({ center = [20, 0], zoom = 2 }) {
           </Circle>
         ))}
 
-        {/* --- LAYER 2: VESSELS --- */}
+        {/* --- LAYER 2: VESSELS (Arrows) --- */}
         {vessels.map((v) => {
           const lat = Number(v.last_position_lat);
           const lon = Number(v.last_position_lon);
@@ -166,9 +170,20 @@ export default function MapComponent({ center = [20, 0], zoom = 2 }) {
 
                   <hr style={{margin: "10px 0", borderTop: "1px solid #eee"}}/>
                   
-                  <div style={{ display: "flex", gap: "5px" }}>
-                    <button className="ghost-btn" style={{flex: 1, padding: "5px", fontSize: "11px"}}>Details</button>
-                    <button className="ghost-btn" style={{flex: 1, padding: "5px", fontSize: "11px", color: "#d32f2f", borderColor: "#d32f2f"}}>Alert</button>
+                  {/* ✅ UPDATED: Removed "Details" Link, kept only Alert */}
+                  <div style={{ marginTop: "10px" }}>
+                    <button 
+                        className="ghost-btn" 
+                        style={{
+                            width: "100%", // Full width now that it is alone
+                            padding: "5px", 
+                            fontSize: "11px", 
+                            color: "#d32f2f", 
+                            borderColor: "#d32f2f"
+                        }}
+                    >
+                        Alert
+                    </button>
                   </div>
                 </div>
               </Popup>
@@ -178,12 +193,39 @@ export default function MapComponent({ center = [20, 0], zoom = 2 }) {
       </MapContainer>
       
       {/* FLOATING LEGEND */}
-      <div style={{ position: "absolute", bottom: "20px", right: "20px", background: "white", padding: "12px", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", zIndex: 1000, fontSize: "11px" }}>
-          <h4 style={{margin: "0 0 8px 0", fontSize: "12px"}}>Legend</h4>
-          <div style={{display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px"}}><span style={{width:8, height:8, background: "#2e7d32", borderRadius: "50%"}}></span> Cargo / Container</div>
-          <div style={{display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px"}}><span style={{width:8, height:8, background: "#d32f2f", borderRadius: "50%"}}></span> Tanker / Hazard</div>
-          <div style={{display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px"}}><span style={{width:8, height:8, background: "#ffca28", borderRadius: "50%"}}></span> Weather Risk</div>
-          <div style={{display: "flex", alignItems: "center", gap: "6px"}}><span style={{width:8, height:8, background: "#e53935", borderRadius: "50%"}}></span> High Congestion</div>
+      <div style={{ position: "absolute", bottom: "20px", right: "20px", background: "white", padding: "15px", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", zIndex: 1000, fontSize: "11px", minWidth: "140px" }}>
+          <h4 style={{margin: "0 0 10px 0", fontSize: "12px", borderBottom: "1px solid #eee", paddingBottom: "5px"}}>Vessel Types</h4>
+          
+          <div style={{display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px"}}>
+            <svg width="14" height="14" viewBox="0 0 100 100"><path d="M50 0 L100 100 L50 80 L0 100 Z" fill="#2e7d32" /></svg>
+            Cargo / Container
+          </div>
+
+          <div style={{display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px"}}>
+            <svg width="14" height="14" viewBox="0 0 100 100"><path d="M50 0 L100 100 L50 80 L0 100 Z" fill="#d32f2f" /></svg>
+            Tanker / Hazard
+          </div>
+
+          <div style={{display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px"}}>
+            <svg width="14" height="14" viewBox="0 0 100 100"><path d="M50 0 L100 100 L50 80 L0 100 Z" fill="#0288d1" /></svg>
+            Passenger
+          </div>
+
+          <div style={{display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px"}}>
+            <svg width="14" height="14" viewBox="0 0 100 100"><path d="M50 0 L100 100 L50 80 L0 100 Z" fill="#f57c00" /></svg>
+            Fishing
+          </div>
+          
+          <h4 style={{margin: "10px 0 5px 0", fontSize: "12px", borderBottom: "1px solid #eee", paddingBottom: "5px"}}>Risk Zones</h4>
+          
+          <div style={{display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px"}}>
+            <span style={{width: 12, height: 12, background: "#ffca28", borderRadius: "50%", opacity: 0.6, border: "1px solid #cca000"}}></span> 
+            Weather Risk
+          </div>
+          <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+             <span style={{width: 12, height: 12, background: "#e53935", borderRadius: "50%", opacity: 0.6, border: "1px solid #b71c1c"}}></span> 
+             Congestion
+          </div>
       </div>
     </div>
   );
