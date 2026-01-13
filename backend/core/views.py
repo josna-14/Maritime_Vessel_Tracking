@@ -120,36 +120,45 @@ class VoyageTrackView(APIView):
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-# 👇 1. Make sure Voyage is imported here
 from .models import Vessel, RiskZone, Port, Voyage 
 import time
 from django.core.cache import cache
 
 class DashboardStatsView(APIView):
     def get(self, request):
-        # --- 1. Basic Counts ---
+        # 1. Basic Counts
         total_vessels = Vessel.objects.count()
         active_risks = RiskZone.objects.count()
-        
-        # --- 2. Active Voyages Fix ---
-        # We count voyages where the status is exactly 'In Transit'
         active_voyages_count = Voyage.objects.filter(status='In Transit').count()
-
-        # --- 3. Congestion Logic ---
         high_congestion = Port.objects.filter(congestion_score__gt=90).count()
 
-        # --- 4. Throughput Simulation ---
+        # 2. Throughput Simulation
         last_second = int(time.time()) - 1
         real_http_requests = cache.get(f"throughput_{last_second}", 0)
         background_processing = int(total_vessels / 5) if total_vessels > 0 else 0
         total_throughput = real_http_requests + background_processing
 
+        # 3. ✅ NEW: Get Recent Voyages List for the Table
+        # We grab the last 5 'In Transit' voyages
+        recent_qs = Voyage.objects.filter(status='In Transit').select_related('vessel', 'port_from', 'port_to').order_by('-departure_time')[:5]
+        
+        recent_data = []
+        for v in recent_qs:
+            recent_data.append({
+                "id": v.id,
+                "vessel_name": v.vessel.name if v.vessel else "Unknown",
+                "origin": v.port_from.name if v.port_from else "Sea",
+                "destination": v.port_to.name if v.port_to else "Sea",
+                "status": v.status
+            })
+
         return Response({
             "total_vessels": total_vessels,
-            "active_voyages": active_voyages_count, # 👈 Added this!
+            "active_voyages": active_voyages_count,
             "active_risks": active_risks,
             "high_congestion_ports": high_congestion,
             "throughput": total_throughput,
+            "recent_voyages": recent_data, # 👈 Sending the list to frontend!
             "system_status": "Operational"
         })
 # -------------------------
