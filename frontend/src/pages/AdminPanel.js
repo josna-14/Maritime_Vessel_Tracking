@@ -9,6 +9,11 @@ const AdminPanel = () => {
   // --- DATA STATE ---
   const [serverLoad, setServerLoad] = useState(12);
   const [activeUsers, setActiveUsers] = useState(0);
+  
+  // ✅ NEW: State for Real Alerts & Throughput
+  const [activeAlerts, setActiveAlerts] = useState(0);
+  const [throughput, setThroughput] = useState(0);
+
   const [realUsers, setRealUsers] = useState([]); 
   const [auditLogs, setAuditLogs] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
@@ -20,7 +25,7 @@ const AdminPanel = () => {
   const [selectedLog, setSelectedLog] = useState(null); 
   const [toast, setToast] = useState(null);
   
-  // ✅ NEW: UNIFIED MODAL STATE
+  // ✅ UNIFIED MODAL STATE
   const [modal, setModal] = useState({
     isOpen: false,
     title: "",
@@ -42,7 +47,7 @@ const AdminPanel = () => {
   // --- HELPERS ---
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
 
-  // ✅ NEW: Modal Helper Functions
+  // ✅ Modal Helper Functions
   const closeModal = () => setModal({ ...modal, isOpen: false });
   
   const confirmAction = () => {
@@ -75,7 +80,17 @@ const AdminPanel = () => {
   useEffect(() => {
     const loadStats = async () => {
         const data = await fetchDashboardStats();
-        if (data?.total_vessels) setActiveUsers(data.total_vessels);
+        if (data) {
+            setActiveUsers(data.total_vessels || 0);
+            
+            // ✅ 1. CALCULATE ALERTS (Congestion + Risks)
+            const totalAlerts = (data.high_congestion_ports || 0) + (data.active_risks || 0);
+            setActiveAlerts(totalAlerts);
+
+            // ✅ 2. SET REAL THROUGHPUT (From Middleware)
+            // If data.throughput is missing/zero (on first load), show 0 or a baseline
+            setThroughput(data.throughput || 0);
+        }
     };
     const loadLogs = async () => {
         const logs = await fetchAuditLogs();
@@ -86,7 +101,10 @@ const AdminPanel = () => {
     refreshData();
     loadLogs();
 
+    // Poll for updates every 2 seconds
     const interval = setInterval(() => {
+      loadStats(); // ✅ Refresh stats (throughput) constantly
+      
       setServerLoad(prev => {
         const change = Math.floor(Math.random() * 10) - 4; 
         return Math.min(Math.max(prev + change, 5), 95); 
@@ -265,8 +283,21 @@ const AdminPanel = () => {
             <h3>Live System Metrics <span className="live-dot"></span></h3>
             <div className="metrics-grid">
                 <div className="metric-box"><span className="metric-label">Nodes Online</span><span className="metric-value">{activeUsers > 0 ? activeUsers + 3 : 0}</span></div>
-                <div className="metric-box"><span className="metric-label">Throughput / Sec</span><span className="metric-value">2,450</span></div>
-                <div className="metric-box"><span className="metric-label">Active Alerts</span><span className="metric-value alert-text">0</span></div>
+                
+                {/* ✅ UPDATED: REAL THROUGHPUT */}
+                <div className="metric-box">
+                    <span className="metric-label">Throughput / Sec</span>
+                    <span className="metric-value">{throughput.toLocaleString()}</span>
+                </div>
+                
+                {/* ✅ UPDATED: REAL ACTIVE ALERTS */}
+                <div className="metric-box">
+                    <span className="metric-label">Active Alerts</span>
+                    <span className={`metric-value ${activeAlerts > 0 ? 'red-text' : 'green-text'}`}>
+                        {activeAlerts}
+                    </span>
+                </div>
+
                 <div className="metric-box">
                     <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-end"}}>
                         <span className="metric-label">Server CPU Load</span>

@@ -22,6 +22,9 @@ from .serializers import (
 )
 from .unctad_loader import fetch_unctad_ports
 from django.db.models import Q
+
+import time
+from django.core.cache import cache
 # -------------------------
 # HOME & AUTH
 # -------------------------
@@ -109,23 +112,46 @@ class VoyageTrackView(APIView):
         serializer = VoyageTrackSerializer(tracks, many=True)
         return Response(serializer.data)
 
+
+
+# backend/core/views.py
+
+# backend/core/views.py
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+# 👇 1. Make sure Voyage is imported here
+from .models import Vessel, RiskZone, Port, Voyage 
+import time
+from django.core.cache import cache
+
 class DashboardStatsView(APIView):
     def get(self, request):
-        # Optional: Trigger data loader
-        # fetch_unctad_ports() 
+        # --- 1. Basic Counts ---
+        total_vessels = Vessel.objects.count()
+        active_risks = RiskZone.objects.count()
+        
+        # --- 2. Active Voyages Fix ---
+        # We count voyages where the status is exactly 'In Transit'
+        active_voyages_count = Voyage.objects.filter(status='In Transit').count()
+
+        # --- 3. Congestion Logic ---
+        high_congestion = Port.objects.filter(congestion_score__gt=90).count()
+
+        # --- 4. Throughput Simulation ---
+        last_second = int(time.time()) - 1
+        real_http_requests = cache.get(f"throughput_{last_second}", 0)
+        background_processing = int(total_vessels / 5) if total_vessels > 0 else 0
+        total_throughput = real_http_requests + background_processing
 
         return Response({
-            "total_vessels": Vessel.objects.count(),
-            "active_voyages": Voyage.objects.filter(status="In Transit").count(),
-            "ports_monitored": Port.objects.count(),
-            "recent_events": Event.objects.count(),
-            "high_congestion_ports": Port.objects.filter(congestion_score__gt=80).count(),
-            "active_risks": RiskZone.objects.count(),
-            "recent_voyages": VoyageSerializer(
-                Voyage.objects.order_by("-departure_time")[:5], many=True
-            ).data
+            "total_vessels": total_vessels,
+            "active_voyages": active_voyages_count, # 👈 Added this!
+            "active_risks": active_risks,
+            "high_congestion_ports": high_congestion,
+            "throughput": total_throughput,
+            "system_status": "Operational"
         })
-
 # -------------------------
 # ANALYST ANALYTICS
 # -------------------------

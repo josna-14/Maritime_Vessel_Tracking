@@ -551,3 +551,12 @@
     
     .min-h-400 { min-height: auto; }
 }
+
+/* ✅ NEW: Dynamic Text Colors */
+.red-text {
+    color: #ef4444 !important; /* Red for danger/alerts */
+}
+
+.green-text {
+    color: #16a34a !important; /* Green for healthy/zero alerts */
+}
