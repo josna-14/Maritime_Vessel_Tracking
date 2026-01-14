@@ -1,7 +1,8 @@
-
 import os
 import sys
-
+# ✅ ADDED: Import pymysql and tell it to act as the MySQL driver
+import pymysql
+pymysql.install_as_MySQLdb()
 
 def main():
     """Run administrative tasks."""
