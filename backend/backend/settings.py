@@ -1,3 +1,5 @@
+import dj_database_url
+import os
 from pathlib import Path
 
 
@@ -63,18 +65,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+# Database Configuration
+# If there is a cloud database (Render), use it.
+# If not (Local), use SQLite or your local settings.
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'maritime_db',
-        'USER': 'root',
-        'PASSWORD': 'Swetha1*',   
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
