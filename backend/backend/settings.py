@@ -8,14 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p6065abpan9kaiy0l6qdna^_!&8@ck3ya13(2&btm+1*c7nsj&'
 DEBUG = True
 
-# ✅ 1. Ngrok Configuration 
 ALLOWED_HOSTS = [
+    'maritime-backend-0521.onrender.com',  # Your specific Render URL
+    '.onrender.com',                       # Any Render URL (for future safety)
     'localhost',
-    '127.0.0.1',
-    '.ngrok-free.dev', 
-    '.ngrok-free.app',  
+    '127.0.0.1'
 ]
-
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
@@ -74,7 +72,6 @@ DATABASES = {
         conn_max_age=600
     )
 }
-
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
     { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
