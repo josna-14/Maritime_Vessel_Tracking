@@ -1,5 +1,3 @@
-import dj_database_url
-import os
 from pathlib import Path
 
 
@@ -8,12 +6,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p6065abpan9kaiy0l6qdna^_!&8@ck3ya13(2&btm+1*c7nsj&'
 DEBUG = True
 
+# ✅ 1. Ngrok Configuration 
 ALLOWED_HOSTS = [
-    'maritime-backend-0521.onrender.com',  # Your specific Render URL
-    '.onrender.com',                       # Any Render URL (for future safety)
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    '.ngrok-free.dev', 
+    '.ngrok-free.app',  
 ]
+
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
@@ -36,7 +36,6 @@ MIDDLEWARE = [
     'core.middleware.RequestThroughputMiddleware',
     'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,15 +63,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database Configuration
-# If there is a cloud database (Render), use it.
-# If not (Local), use SQLite or your local settings.
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'maritime_db',
+        'USER': 'root',
+        'PASSWORD': 'Swetha1*',   
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
 }
+
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
     { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
@@ -108,18 +112,3 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "ngrok-skip-browser-warning",
 ]
-
-STATIC_URL = 'static/'
-
-# Add this line:
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Add this block for modern Django 6.0+ storage:
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
