@@ -1,13 +1,14 @@
 // src/api/api.js
 
-// ✅ CONFIGURATION (Only declare this once!)
-const API_BASE = "https://celestina-raffish-nayeli.ngrok-free.dev/api";
-// If using ngrok, swap the line above with your ngrok URL.
+// ✅ Point to Render Backend
+const API_BASE = "https://maritime-backend-0521.onrender.com/api";
 
+// ✅ FIXED: Add the Authorization Token to headers
 const getHeaders = () => {
+  const token = localStorage.getItem("access_token");
   return {
     "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true", 
+    "Authorization": token ? `Bearer ${token}` : "" 
   };
 };
 
@@ -71,9 +72,10 @@ export async function fetchAuditLogs() {
 // --- AUTH & ACTIONS ---
 
 export async function loginUser(credentials) {
+    // Login does NOT need the token header, so we can use a simple header here
     const res = await fetch(`${API_BASE}/login/`, {
         method: "POST",
-        headers: getHeaders(),
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials)
     });
     return res.json();
@@ -103,7 +105,6 @@ export async function updateUserRole(userId, newRole) {
 
 // --- ALERTS SYSTEM ---
 
-// ✅ NEW: Broadcast Alert (For Admin)
 export async function broadcastAlert(alertData) {
     try {
         const res = await fetch(`${API_BASE}/alerts/create/`, {

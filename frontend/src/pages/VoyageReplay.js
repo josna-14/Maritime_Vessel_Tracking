@@ -4,20 +4,22 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./VoyageReplay.css";
 
-// ✅ 1. API Configuration
-const API_BASE = "https://celestina-raffish-nayeli.ngrok-free.dev/api";
+// ✅ CHANGED: Point to Render Backend
+const API_BASE = "https://maritime-backend-0521.onrender.com/api";
 const getHeaders = () => ({
   "Content-Type": "application/json",
-  "ngrok-skip-browser-warning": "true",
 });
 
-// ✅ 2. Custom Icons
+// ... (Rest of the file logic remains exactly the same below) ...
+
 const shipIcon = L.divIcon({
   className: "replay-ship-icon",
   html: `<div style="background-color: #1f3c88; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.5);"></div>`,
   iconSize: [22, 22],
   iconAnchor: [11, 11],
 });
+
+// ... (Copy the rest of your Voyagereplay.js file here) ...
 
 const startIcon = L.divIcon({
   className: "start-icon",
@@ -33,7 +35,6 @@ const endIcon = L.divIcon({
   iconAnchor: [7, 7],
 });
 
-// Helper: Auto-center map on ship
 function MapUpdater({ center }) {
   const map = useMap();
   useEffect(() => {
@@ -163,7 +164,7 @@ export default function VoyageReplay() {
       {!loading && hasData && (
         <>
           <section className="card" style={{ marginBottom: "20px", padding: "20px" }}>
-             
+              
              {/* Info Header */}
              <div style={{display:"flex", justifyContent:"space-between", marginBottom:"15px", alignItems: "flex-end"}}>
                 <div>
@@ -217,7 +218,7 @@ export default function VoyageReplay() {
                         onClick={() => { setIndex(0); setPlaying(false); }}
                         style={{ border: "1px solid #ccc", color: "#555" }}
                     >
-                       🔁 Reset
+                        🔁 Reset
                     </button>
                 </div>
 

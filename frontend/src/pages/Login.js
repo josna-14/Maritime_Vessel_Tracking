@@ -18,17 +18,15 @@ export default function Login() {
     setError("");
 
     try {
-      // ✅ CHANGED: Using your public Ngrok Backend URL
-      // We also added headers to bypass the Ngrok warning page
+      // ✅ CHANGED: Point to Render Backend
       const res = await axios.post(
-        "https://celestina-raffish-nayeli.ngrok-free.dev/api/login/",
+        "https://maritime-backend-0521.onrender.com/api/login/",
         {
           username: form.username,
           password: form.password
         },
         {
           headers: {
-            "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/json"
           }
         }

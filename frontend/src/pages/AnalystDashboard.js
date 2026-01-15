@@ -33,21 +33,20 @@ const THEME = {
   BG: "#F5F7FA"
 };
 
-// ✅ REFINED CARGO COLORS (Professional Maritime Palette)
 const CARGO_COLOR_MAP = {
-  "Oil Tanker": "#1E3A8A",      // Deep Navy Blue
+  "Oil Tanker": "#1E3A8A",      
   "Tanker": "#1E3A8A",
-  "Container Ship": "#0284C7",  // Ocean Blue
+  "Container Ship": "#0284C7",  
   "Container": "#0284C7",
-  "LNG Carrier": "#22C55E",     // Soft Green
+  "LNG Carrier": "#22C55E",     
   "LPG Carrier": "#22C55E",
-  "Bulk Carrier": "#F59E0B",    // Amber Gold
-  "General Cargo": "#F43F5E",   // Rose Red
-  "Fishing Vessel": "#8B5CF6",  // Purple
+  "Bulk Carrier": "#F59E0B",    
+  "General Cargo": "#F43F5E",   
+  "Fishing Vessel": "#8B5CF6",  
   "Fishing": "#8B5CF6",
-  "Passenger Ship": "#FB923C",  // Soft Orange
+  "Passenger Ship": "#FB923C",  
   "Passenger": "#FB923C",
-  "Unknown": "#CBD5E1"          // Grey
+  "Unknown": "#CBD5E1"          
 };
 
 export default function AnalystDashboard() {
@@ -80,13 +79,18 @@ export default function AnalystDashboard() {
 
   const fetchAnalytics = () => {
     setLoading(true);
-    const BASE_URL = "https://celestina-raffish-nayeli.ngrok-free.dev"; 
+    // ✅ Point to Render Backend
+    const BASE_URL = "https://maritime-backend-0521.onrender.com"; 
     const url = `${BASE_URL}/api/analytics/?days=${selectedDays}&type=${selectedType}&region=${selectedRegion}`;
     
+    // ✅ RETRIEVE TOKEN (Crucial Fix)
+    const token = localStorage.getItem("access_token");
+
     fetch(url, {
         headers: {
-            "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            // ✅ ADD AUTHORIZATION HEADER
+            "Authorization": token ? `Bearer ${token}` : ""
         }
     })
       .then(res => {
@@ -332,7 +336,7 @@ const KPICard = ({ title, value, icon, color, trend, isRisk, isWarning, updated,
             className="metric-card clickable-card" 
             style={{ borderLeft: `5px solid ${color}` }}
             onClick={() => link && navigate(link)}
-            title={tooltip} // ✅ Simple Native Tooltip
+            title={tooltip} 
         >
             <div className="card-top">
                 <div>
