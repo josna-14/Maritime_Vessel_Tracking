@@ -1,24 +1,21 @@
 from pathlib import Path
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-p6065abpan9kaiy0l6qdna^_!&8@ck3ya13(2&btm+1*c7nsj&'
 DEBUG = True
 
-# ✅ 1. Ngrok Configuration 
+# ✅ 1. Standard Localhost Configuration 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '.ngrok-free.dev', 
-    '.ngrok-free.app',  
 ]
 
-
+# CSRF_TRUSTED_ORIGINS is usually not needed for http://localhost, 
+# but if you need it, keep it simple:
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.ngrok-free.app",
-    "https://*.ngrok-free.dev",
-    # "https://bbbb-33-44.ngrok-free.app", 
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 INSTALLED_APPS = [
@@ -97,18 +94,12 @@ REST_FRAMEWORK = {
     ]
 }
 
-
 from corsheaders.defaults import default_headers  
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://*.ngrok-free.app",
-    "https://*.ngrok-free.dev",
 ]
 
-
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    "ngrok-skip-browser-warning",
-]
+CORS_ALLOW_HEADERS = list(default_headers)
