@@ -106,13 +106,17 @@ REST_FRAMEWORK = {
     ]
 }
 
+# In backend/settings.py
+
 from corsheaders.defaults import default_headers
-CORS_ALLOW_ALL_ORIGINS = True 
+
+# ✅ This must be True to allow specific domains below
+CORS_ALLOW_ALL_ORIGINS = False 
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    # ✅ Add your NEW Vercel URL here (remove the trailing slash '/')
+    # ✅ YOUR VERCEL FRONTEND URL (No trailing slash!)
     "https://maritime-vessel-tracking-gamma.vercel.app",
 ]
 
