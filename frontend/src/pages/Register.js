@@ -25,8 +25,8 @@ const Register = () => {
     }
 
     try {
-      // ✅ Sending the 'role' to the backend
-      const response = await fetch("http://127.0.0.1:8000/api/register/", {
+      // ✅ CHANGED: Point to Render Backend instead of localhost
+      const response = await fetch("https://maritime-backend-0521.onrender.com/api/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,7 +35,7 @@ const Register = () => {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          role: formData.role, // <--- The backend will receive this
+          role: formData.role, 
         }),
       });
 
@@ -49,18 +49,18 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Error registering:", error);
-      alert("Registration failed. Is the backend running?");
+      alert("Registration failed. Please check your connection.");
     }
   };
 
-  // ✅ Inline Styles (No CSS file needed)
+  // ✅ Inline Styles
   const styles = {
     container: {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       height: "100vh",
-      backgroundColor: "#f4f7f6", // Light grey background
+      backgroundColor: "#f4f7f6", 
     },
     card: {
       backgroundColor: "white",
@@ -72,7 +72,7 @@ const Register = () => {
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     },
     title: {
-      color: "#003366", // Marine Blue
+      color: "#003366", 
       marginBottom: "20px",
       fontSize: "24px",
       fontWeight: "bold",
@@ -109,7 +109,7 @@ const Register = () => {
     button: {
       width: "100%",
       padding: "12px",
-      backgroundColor: "#003366", // Marine Blue
+      backgroundColor: "#003366", 
       color: "white",
       border: "none",
       borderRadius: "6px",
@@ -164,7 +164,6 @@ const Register = () => {
             />
           </div>
 
-          {/* ✅ NEW: Role Selection Dropdown */}
           <div style={styles.inputGroup}>
             <label style={styles.label}>Select Role</label>
             <select
