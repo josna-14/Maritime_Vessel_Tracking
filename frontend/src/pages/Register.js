@@ -7,8 +7,12 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "Operator", // ✅ Default role
+    role: "Operator",
   });
+
+  // ✅ New State for messages
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
 
@@ -18,14 +22,17 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    
+    // Clear previous messages
+    setError("");
+    setSuccess("");
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
     try {
-      // ✅ CHANGED: Point to Render Backend instead of localhost
       const response = await fetch("https://maritime-backend-0521.onrender.com/api/register/", {
         method: "POST",
         headers: {
@@ -42,18 +49,24 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert(`Registration Successful as ${formData.role}! Please Login.`);
-        navigate("/login");
+        // ✅ Show success message inside the card
+        setSuccess(`Registration Successful as ${formData.role}! Redirecting to login...`);
+        
+        // Wait 2 seconds so user can read the message, then redirect
+        setTimeout(() => {
+            navigate("/login");
+        }, 2000);
+        
       } else {
-        alert("Error: " + JSON.stringify(data));
+        // ✅ Show error message inside the card
+        setError(data.detail || "Registration failed. Please try again.");
       }
     } catch (error) {
       console.error("Error registering:", error);
-      alert("Registration failed. Please check your connection.");
+      setError("Network error. Please check your connection.");
     }
   };
 
-  // ✅ Inline Styles
   const styles = {
     container: {
       display: "flex",
@@ -76,6 +89,25 @@ const Register = () => {
       marginBottom: "20px",
       fontSize: "24px",
       fontWeight: "bold",
+    },
+    // ✅ NEW STYLES FOR MESSAGES
+    errorMsg: {
+      backgroundColor: "#ffebee",
+      color: "#c62828",
+      padding: "10px",
+      borderRadius: "6px",
+      fontSize: "14px",
+      marginBottom: "15px",
+      border: "1px solid #ffcdd2"
+    },
+    successMsg: {
+      backgroundColor: "#e8f5e9",
+      color: "#2e7d32",
+      padding: "10px",
+      borderRadius: "6px",
+      fontSize: "14px",
+      marginBottom: "15px",
+      border: "1px solid #c8e6c9"
     },
     inputGroup: {
       marginBottom: "15px",
@@ -136,6 +168,11 @@ const Register = () => {
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Create Account</h2>
+        
+        {/* ✅ DISPLAY MESSAGES HERE */}
+        {error && <div style={styles.errorMsg}>{error}</div>}
+        {success && <div style={styles.successMsg}>{success}</div>}
+
         <form onSubmit={handleRegister}>
           
           <div style={styles.inputGroup}>
