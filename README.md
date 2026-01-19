@@ -677,7 +677,7 @@ GitHub:[@Rakshita](https://github.com/rakshitha9019)
 
 For issues and questions:
 - Open an issue on [GitHub Issues](https://github.com/josna-14/Maritime_Vessel_Tracking/issues)
-- Email: support@marineanalytics.example.com
+
 
 ---
 
