@@ -151,19 +151,19 @@ Marine Analytics addresses these challenges by providing:
 ## 📸 Screenshots
 
 ### Dashboard Overview
-![Dashboard](https://via.placeholder.com/800x450/1e3a8a/ffffff?text=Marine+Analytics+Dashboard)
+![Dashboard](https://github.com/josna-14/Maritime_Vessel_Tracking/blob/main/Dashboard.png)
 *Real-time fleet overview with key metrics and alert summary*
 
 ### Interactive Map with Clustering
-![Map View](https://via.placeholder.com/800x450/0891b2/ffffff?text=Live+Vessel+Map+with+Clustering)
+![Map View](https://github.com/josna-14/Maritime_Vessel_Tracking/blob/main/Map.png)
 *Leaflet.js map displaying 300+ vessels with intelligent clustering*
 
 ### Voyage Replay Interface
-![Voyage Replay](https://via.placeholder.com/800x450/7c3aed/ffffff?text=Historical+Voyage+Replay)
+![Voyage Replay](https://github.com/josna-14/Maritime_Vessel_Tracking/blob/main/Replay.png)
 *Time-travel feature showing vessel's historical path with timeline slider*
 
 ### Admin Panel
-![Admin Panel](https://via.placeholder.com/800x450/059669/ffffff?text=RBAC+Admin+Dashboard)
+![Admin Panel](https://github.com/josna-14/Maritime_Vessel_Tracking/blob/main/Admin_control.png)
 *Role-based admin panel for system configuration and user management*
 
 ---
