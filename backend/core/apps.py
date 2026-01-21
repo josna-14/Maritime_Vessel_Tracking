@@ -20,4 +20,4 @@ class CoreConfig(AppConfig):
             thread.start()
             print("🚀 Vessel enrichment thread started")
         except Exception as e:
-            print("❌ Enrichment startup error:", e)
+            print("❌ Enrichment startup error:", e) 

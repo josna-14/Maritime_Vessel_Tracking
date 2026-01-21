@@ -52,7 +52,7 @@ class PortSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# ✅ FIXED VOYAGE SERIALIZER (VERY IMPORTANT)
+# FIXED VOYAGE SERIALIZER (VERY IMPORTANT)
 class VoyageSerializer(serializers.ModelSerializer):
     vessel_name = serializers.ReadOnlyField(source="vessel.name")
     vessel_id = serializers.IntegerField(source="vessel.id", read_only=True)

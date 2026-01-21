@@ -42,4 +42,4 @@ def run_enrichment_loop():
         for v in vessels:
             enrich_vessel(v)
 
-        time.sleep(300)  # every 5 min
+        time.sleep(300)  # in every 5 min

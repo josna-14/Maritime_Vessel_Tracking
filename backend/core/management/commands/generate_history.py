@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("Generating historical tracks for ALL vessels...")
         
-        # ✅ CHANGE: Removed [:10] to process every single vessel
+        # CHANGE: Removed [:10] to process every single vessel
         vessels = Vessel.objects.all()
         
         if not vessels.exists():
