@@ -79,7 +79,7 @@ def create_voyages():
                 "status": status
             }
         )
-    print(f"✅ Generated voyages for {vessels.count()} vessels.")
+    print(f"Generated voyages for {vessels.count()} vessels.")
 
 def create_events():
     print("🔔 Generating Events & Notifications...")
@@ -121,7 +121,7 @@ def create_events():
                 event=event,
                 message=f"Alert: {e_type} detected for {vessel.name}",
                 type="Alert",
-                user=system_user  # <--- Now this is guaranteed to exist!
+                user=system_user  
             )
     
     print("✅ Generated events and notifications.")

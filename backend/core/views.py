@@ -138,7 +138,7 @@ class DashboardStatsView(APIView):
         background_processing = int(total_vessels / 5) if total_vessels > 0 else 0
         total_throughput = real_http_requests + background_processing
 
-        # 3. ✅ NEW: Get Recent Voyages List for the Table
+        # 3. NEW: Get Recent Voyages List for the Table
         # We grab the last 5 'In Transit' voyages
         recent_qs = Voyage.objects.filter(status='In Transit').select_related('vessel', 'port_from', 'port_to').order_by('-departure_time')[:5]
         

@@ -6,17 +6,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-p6065abpan9kaiy0l6qdna^_!&8@ck3ya13(2&btm+1*c7nsj&'
 
-# ✅ Set DEBUG to False in production (optional, but recommended)
-# You can use an environment variable to toggle this
+# Set DEBUG to False in production 
+# can use an environment variable to toggle this
 DEBUG = True 
 
-# ✅ CHANGED: Allow all hosts so Render URL works
+# CHANGED: Allow all hosts so Render URL works
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    # Add your Render URL here later if needed, e.g., "https://your-app.onrender.com"
+    # Add Render URL here later if needed, e.g., "https://your-app.onrender.com"
 ]
 
 INSTALLED_APPS = [
@@ -34,7 +34,7 @@ MIDDLEWARE = [
     'core.middleware.RequestThroughputMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Correctly placed
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,7 +62,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# ✅ Database Configuration (TiDB Cloud + Local Fallback)
+#  Database Configuration (TiDB Cloud + Local Fallback)
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
@@ -77,7 +77,7 @@ DATABASES = {
     }
 }
 
-# ✅ TiDB Cloud SSL Configuration
+#  TiDB Cloud SSL Configuration
 if os.environ.get('DB_SSL') == 'True':
     DATABASES['default']['OPTIONS']['ssl'] = {'ca': '/etc/ssl/certs/ca-certificates.crt'}
 
@@ -95,7 +95,7 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'core.User'
 
-# ✅ STATIC FILES CONFIGURATION (Required for Render)
+# STATIC FILES CONFIGURATION (Required for Render)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -110,13 +110,13 @@ REST_FRAMEWORK = {
 
 from corsheaders.defaults import default_headers
 
-# ✅ This must be True to allow specific domains below
+# CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = False 
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    # ✅ YOUR VERCEL FRONTEND URL (No trailing slash!)
+    # VERCEL FRONTEND URL 
     "https://maritime-vessel-tracking-gamma.vercel.app",
 ]
 

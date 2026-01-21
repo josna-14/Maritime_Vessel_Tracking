@@ -27,7 +27,7 @@ class RiskZone(models.Model):
 
 class User(AbstractUser):
     role = models.CharField(max_length=50, default="user")
-    # ✅ ADD THIS LINE to fix the "Field created_at doesn't have a default value" error
+    # ADDED THIS LINE to fix the "Field created_at doesn't have a default value" error
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
